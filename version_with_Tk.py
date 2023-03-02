@@ -9,6 +9,7 @@ def func_with_out():
     win.quit()
 
 
+
 # Work with open program window
 win = tk.Tk()
 win.title("Ploting spectral specular reflection coefficients")
