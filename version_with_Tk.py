@@ -1,4 +1,6 @@
 import tkinter as tk
+import pandas as pd
+"""
 path_work_file, path_etalon_file = "", ""
 
 
@@ -29,9 +31,26 @@ work_file.pack(pady=10)
 output_btn = tk.Button(win, text="Download data", command=func_with_out)
 output_btn.pack(pady=10)
 
-win.mainloop()
 
+
+
+
+
+
+
+win.mainloop()
+"""
 # Working with data
 
-print(path_work_file)
-print(path_etalon_file)
+#path_etalon_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\2022-06-21_Al.xlsx"
+#path_work_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\Ag на кремнии.xlsx"
+
+#etalon_data = pd.read_excel("a_2022-06-21_Al.xlsx", header=None)
+#data_for_work = pd.read_excel(path_work_file, header=None)
+
+f = open('text.txt')
+f.read('r')
+
+
+#print(etalon_data)
+#print(data_for_work)
