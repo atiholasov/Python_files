@@ -1,5 +1,9 @@
+# Created by Alexey Tiholasov (Tiholasov@yandex.ru)
+# needed to: pip install openpyxl
+
 import tkinter as tk
 import pandas as pd
+
 """
 path_work_file, path_etalon_file = "", ""
 
@@ -31,26 +35,23 @@ work_file.pack(pady=10)
 output_btn = tk.Button(win, text="Download data", command=func_with_out)
 output_btn.pack(pady=10)
 
-
-
-
-
-
-
-
 win.mainloop()
 """
+
+
+
+
+
+
+
+
 # Working with data
 
 #path_etalon_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\2022-06-21_Al.xlsx"
 #path_work_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\Ag на кремнии.xlsx"
 
-#etalon_data = pd.read_excel("a_2022-06-21_Al.xlsx", header=None)
+etalon_data = pd.read_excel(r"a_2022-06-21_Al.xlsx", header=None)
 #data_for_work = pd.read_excel(path_work_file, header=None)
 
-f = open('text.txt')
-f.read('r')
-
-
-#print(etalon_data)
+print(etalon_data)
 #print(data_for_work)
