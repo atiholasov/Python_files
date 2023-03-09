@@ -81,6 +81,9 @@ for index in new_etalon_data.index:
 #new_etalon_data = new_etalon_data.iloc[:, 1].interpolate()
 #print(new_etalon_data.head(31))
 
+
+#Можно сделать функцию интерполяции интервала, чтобы было наглднее
+
 a = [[95.1, np.nan, np.nan, 93.2],[93.2, np.nan, np.nan, 91.5]]
 b = pd.Series(0)
 for elem in a:
