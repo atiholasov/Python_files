@@ -94,5 +94,3 @@ correct_column_of_power_in_etalon.index = range(len(correct_column_of_power_in_e
 
 etalon_data.iloc[:,1] = correct_column_of_power_in_etalon
 
-
-print(etalon_data.head(31))
