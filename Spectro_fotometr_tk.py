@@ -94,3 +94,13 @@ correct_column_of_power_in_etalon.index = range(len(correct_column_of_power_in_e
 
 etalon_data.iloc[:,1] = correct_column_of_power_in_etalon
 
+# Reflectivity calculation
+
+reflectivity = pd.DataFrame(np.zeros(2*len(data_for_work)).reshape(len(data_for_work), 2))  # final dataframe for plotting
+
+# Нужно каждый элемент второго столбца у ворк дата по формуле смэтчить с подхрдящим по частоте элементом второго столбца 
+# эталон дата
+
+print(reflectivity.shape)
+print(data_for_work.shape)
+print(etalon_data.shape)
