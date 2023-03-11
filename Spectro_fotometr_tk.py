@@ -5,7 +5,7 @@ import tkinter as tk
 import numpy as np
 import pandas as pd
 
-# Graphics window
+    # Graphics window
 """
 path_work_file, path_etalon_file = "", ""
 
@@ -40,7 +40,7 @@ output_btn.pack(pady=10)
 win.mainloop()
 """
 
-# Reading files
+    # Reading files
 
 #path_etalon_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\2022-06-21_Al.xlsx"
 #path_work_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\Ag на кремнии.xlsx"
@@ -48,46 +48,51 @@ win.mainloop()
 path_etalon_file = r"a_2022-06-21_Al.xlsx"
 path_work_file = r"Ag на кремние.xlsx"
 
-etalon_data = pd.read_excel(path_etalon_file, header=None)
-data_for_work = pd.read_excel(path_work_file, header=None)
+old_etalon_data = pd.read_excel(path_etalon_file, header=None)
+old_data_for_work = pd.read_excel(path_work_file, header=None)
 
-# Working with data
+    # Working with data
 
-data_for_work.iloc[:, 0] = (round(data_for_work.iloc[:, 0]))
+#Preparation work data
+old_data_for_work.iloc[:, 0] = (round(old_data_for_work.iloc[:, 0]))
+data_for_work = old_data_for_work
 
-new_first_column = np.array(range(etalon_data.iloc[0, 0], etalon_data.iloc[-1, 0]+1))
+#Preparation etalon data
+new_first_column = np.array(range(old_etalon_data.iloc[0, 0], old_etalon_data.iloc[-1, 0]+1))
 len_new_first_column = len(new_first_column)
 new_second_column = np.ones(len(new_first_column))
-new_etalon_data = pd.DataFrame(np.column_stack([new_first_column, new_second_column]))
-new_etalon_data = new_etalon_data.astype(int)
+etalon_data = pd.DataFrame(np.column_stack([new_first_column, new_second_column]))
+etalon_data = etalon_data.astype(int)
 
 etalon_data_dict = {}
+for index in old_etalon_data.index:
+    etalon_data_dict[old_etalon_data.iloc[index, 0]] = old_etalon_data.iloc[index, 1]
+
 for index in etalon_data.index:
-    etalon_data_dict[etalon_data.iloc[index, 0]] = etalon_data.iloc[index, 1]
-
-for index in new_etalon_data.index:
-    if new_etalon_data.iloc[index, 0] in etalon_data_dict:
-        new_etalon_data.iloc[index, 1] = etalon_data_dict[new_etalon_data.iloc[index, 0]]
+    if etalon_data.iloc[index, 0] in etalon_data_dict:
+        etalon_data.iloc[index, 1] = etalon_data_dict[etalon_data.iloc[index, 0]]
     else:
-        new_etalon_data.iloc[index, 1] = np.nan
+        etalon_data.iloc[index, 1] = np.nan
 
-# new_etalon_data - хороший, но тупо пременить интерполяцию нельзя, она возьмет только первый и последний
-# элементы. Нужно разбить на интервалы и их интерполировать, а затем склеить.
-# Пробовал что то такое ниже
+arr_concat = []
+column_power = etalon_data.iloc[:,1]
+
+for i in range(len(column_power)):
+    if i == 0:
+        list_for_interpolate = []
+        list_for_interpolate.append(column_power[i])
+        arr_concat.append(pd.Series(column_power[i]))
+    else:
+        list_for_interpolate.append(column_power[i])
+        if not np.isnan(column_power[i]):
+            list_for_interpolate = pd.Series(list_for_interpolate)
+            list_for_interpolate = list_for_interpolate.interpolate()
+            arr_concat.append(list_for_interpolate.iloc[1:])
+            list_for_interpolate = [column_power[i]]
+correct_column_of_power_in_etalon = pd.concat(arr_concat)
+correct_column_of_power_in_etalon.index = range(len(correct_column_of_power_in_etalon))
+
+etalon_data.iloc[:,1] = correct_column_of_power_in_etalon
 
 
-#print(new_etalon_data.head(31))
-
-#new_etalon_data = new_etalon_data.iloc[:, 1].interpolate()
-#print(new_etalon_data.head(31))
-
-
-#Можно сделать функцию интерполяции интервала, чтобы было наглднее
-
-a = [[95.1, np.nan, np.nan, 93.2],[93.2, np.nan, np.nan, 91.5]]
-b = pd.Series(0)
-for elem in a:
-    aa = pd.Series(elem)
-    aa = aa.interpolate()
-    b = b.conco + aa
-print(b)
+print(etalon_data.head(31))
