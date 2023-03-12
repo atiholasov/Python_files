@@ -45,8 +45,8 @@ win.mainloop()
 #path_etalon_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\2022-06-21_Al.xlsx"
 #path_work_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\Ag на кремнии.xlsx"
 
-#path_etalon_file = r"a_2022-06-21_Al.xlsx"
-#path_work_file = r"Ag на кремние.xlsx"
+path_etalon_file = r"a_2022-06-21_Al.xlsx"
+path_work_file = r"Ag на кремние.xlsx"
 
 old_etalon_data = pd.read_excel(path_etalon_file, header=None)
 old_data_for_work = pd.read_excel(path_work_file, header=None)
@@ -114,6 +114,12 @@ correct_et_data = etalon_data.drop(list_for_delite)
 
 reflectivity["etalon"] = correct_et_data.iloc[:,1]
 reflectivity["true_data"] = reflectivity["etalon"] * reflectivity["work_data"] / 100 # true_data is (power_et * power_work / 100)
+reflectivity_for_exel = pd.DataFrame({"Wavelength, [nm]":reflectivity.index, "Reference values":reflectivity["etalon"],
+                                      "Measured values":reflectivity["work_data"], "Real values":reflectivity["true_data"]})
+
+writer = pd.ExcelWriter("Spectral reflection characteristic.xlsx")
+reflectivity_for_exel.to_excel(writer, index=False)
+writer.save()
 
     # Plotting
 
@@ -121,11 +127,8 @@ plt.rcParams["figure.autolayout"] = True
 plt.rcParams["figure.figsize"] = [15, 6]
 plt.figure()
 plt.title('Spectral reflection characteristic')
-
-
 plt.xlabel("wavelength, [nm]")
 plt.ylabel("reflective characteristic")
-
 plt.minorticks_on()
 plt.grid(which='major', color="gray")
 plt.grid(which='minor', linestyle='dotted', axis="both", color="gray")
