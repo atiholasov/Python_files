@@ -42,8 +42,11 @@ win.mainloop()
 
     # Reading files
 
-#path_etalon_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\2022-06-21_Al.xlsx"
-#path_work_file = r"C:\Users\Ivan\Desktop\Alexey_Tiholasov\Script_for_specrofotometr\Data\Ag на кремнии.xlsx"
+#path_etalon_file = r"C:/Users/Ivan/Desktop/Alexey_Tiholasov/Script_for_specrofotometr/Data/2022-06-21_Al.xlsx"
+#path_work_file = r"C:/Users/Ivan/Desktop/Alexey_Tiholasov/Script_for_specrofotometr/Data/Ag на кремнии.xlsx"
+
+#path_etalon_file = "C:\\Users\\Ivan\\Desktop\\Alexey_Tiholasov\\Script_for_specrofotometr\\Data\\2022-06-21_Al.xlsx"
+#path_work_file = "C:\\Users\\Ivan\\Desktop\\Alexey_Tiholasov\\Script_for_specrofotometr\\Data\\Ag на кремнии.xlsx"
 
 path_etalon_file = r"a_2022-06-21_Al.xlsx"
 path_work_file = r"Ag на кремние.xlsx"
@@ -92,7 +95,7 @@ for i in range(len(column_power)):
 correct_column_of_power_in_etalon = pd.concat(arr_concat)
 correct_column_of_power_in_etalon.index = range(len(correct_column_of_power_in_etalon))
 
-etalon_data.iloc[:,1] = correct_column_of_power_in_etalon
+etalon_data.iloc[:, 1] = correct_column_of_power_in_etalon
 
 # Reflectivity calculation
 
@@ -103,7 +106,7 @@ data_for_work.index = reflectivity.index
 etalon_data.index = etalon_data.iloc[:,0].astype(float)
 etalon_data.columns = ["wavelength", "power"]
 data_for_work.columns = ["wavelength", "power"]
-reflectivity["work_data"] = data_for_work.iloc[:,1]
+reflectivity["work_data"] = data_for_work.iloc[:, 1]
 
 list_for_delite = []   # delited wavelength in etalon data wich not in work_data 
 for lenght in etalon_data.wavelength:
@@ -112,14 +115,16 @@ for lenght in etalon_data.wavelength:
 
 correct_et_data = etalon_data.drop(list_for_delite)
 
-reflectivity["etalon"] = correct_et_data.iloc[:,1]
-reflectivity["true_data"] = reflectivity["etalon"] * reflectivity["work_data"] / 100 # true_data is (power_et * power_work / 100)
-reflectivity_for_exel = pd.DataFrame({"Wavelength, [nm]":reflectivity.index, "Reference values":reflectivity["etalon"],
-                                      "Measured values":reflectivity["work_data"], "Real values":reflectivity["true_data"]})
+reflectivity["etalon"] = correct_et_data.iloc[:, 1]
+reflectivity["true_data"] = reflectivity["etalon"] * reflectivity["work_data"] / 100  # true_data is (power_et * power_work / 100)
+reflectivity_for_exel = pd.DataFrame({"Wavelength, [nm]": reflectivity.index,
+                                      f"Reference values ({path_etalon_file})": reflectivity["etalon"],
+                                      f"Measured values ({path_work_file})": reflectivity["work_data"],
+                                      "Real values": reflectivity["true_data"]})
 
-writer = pd.ExcelWriter("Spectral reflection characteristic.xlsx")
+writer = pd.ExcelWriter(f"Result for {path_work_file}")
 reflectivity_for_exel.to_excel(writer, index=False)
-writer.save()
+writer.close()
 
     # Plotting
 
