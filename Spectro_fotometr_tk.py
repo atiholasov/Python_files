@@ -2,21 +2,46 @@
 # needed to: pip install openpyxl
 
 import tkinter as tk
+from tkinter import ttk, filedialog
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-    # Graphics window
+path_work_file, path_etalon_file, name_et_file, name_wr_file = "", "", "", ""
 
-path_work_file, path_etalon_file = "", ""
+
+def prepare_file_name(file_path):
+    file_name = list(str(file_path).split("/"))[-1]
+    return file_name
+
+    # Graphics window
 
 
 def func_with_out():
-    global path_work_file, path_etalon_file
-    path_work_file = work_file.get()
-    path_etalon_file = etalon_file.get()
     win.quit()
 
+
+def open_file_et():
+    global path_etalon_file, name_et_file
+    file = filedialog.askopenfile(mode='r', filetypes=[("Excel files", "*.xlsx")])
+    if file:
+       filepath = os.path.abspath(file.name)
+       tk.Label(win, text="Эталонный файл : " + str(filepath)).pack(pady=10)
+       path_etalon_file = filepath
+       name_et_file = prepare_file_name(file.name)
+
+
+def open_file_wr():
+    global path_work_file, name_wr_file
+    file = filedialog.askopenfile(mode='r', filetypes=[("Excel files", "*.xlsx")])
+    if file:
+       filepath = os.path.abspath(file.name)
+       tk.Label(win, text="Измеренный файл : " + str(filepath)).pack(pady=10)
+       path_work_file = filepath
+       name_wr_file = prepare_file_name(file.name)
+       output_btn = tk.Button(win, text="Download data", command=func_with_out)
+       output_btn.pack(pady=10)
 
 # Work with open program window
 win = tk.Tk()
@@ -24,32 +49,12 @@ win.title("Ploting spectral specular reflection coefficients")
 win.geometry("550x230+730+300")
 win.resizable(True, True)
 
-text_for_etalon = tk.Label(win, text='Вставьте путь к эталонному файлу:')
-text_for_data = tk.Label(win, text='Вставьте путь к измеренным данным:')
-etalon_file = tk.Entry(win, width=60)
-work_file = tk.Entry(win, width=60)
-
-text_for_etalon.pack(pady=10)
-etalon_file.pack(pady=5)
-text_for_data.pack(pady=10)
-work_file.pack(pady=10)
-
-output_btn = tk.Button(win, text="Download data", command=func_with_out)
-output_btn.pack(pady=10)
+Br_1 = ttk.Button(win, text="Выберите путь к эталонному файлу (.xlsx)", command=open_file_et)
+Br_2 = ttk.Button(win, text="Выберите путь к измеренным данным (.xlsx)", command=open_file_wr)
+Br_1.pack(pady=15)
+Br_2.pack(pady=10)
 
 win.mainloop()
-
-
-    # Reading files
-
-#path_etalon_file = r"C:/Users/Ivan/Desktop/Alexey_Tiholasov/Script_for_specrofotometr/Data/2022-06-21_Al.xlsx"
-#path_work_file = r"C:/Users/Ivan/Desktop/Alexey_Tiholasov/Script_for_specrofotometr/Data/Ag на кремнии.xlsx"
-
-#path_etalon_file = "C:\\Users\\Ivan\\Desktop\\Alexey_Tiholasov\\Script_for_specrofotometr\\Data\\2022-06-21_Al.xlsx"
-#path_work_file = "C:\\Users\\Ivan\\Desktop\\Alexey_Tiholasov\\Script_for_specrofotometr\\Data\\Ag на кремнии.xlsx"
-
-path_etalon_file = r"a_2022-06-21_Al.xlsx"
-path_work_file = r"Ag на кремние.xlsx"
 
 old_etalon_data = pd.read_excel(path_etalon_file, header=None)
 old_data_for_work = pd.read_excel(path_work_file, header=None)
@@ -118,11 +123,11 @@ correct_et_data = etalon_data.drop(list_for_delite)
 reflectivity["etalon"] = correct_et_data.iloc[:, 1]
 reflectivity["true_data"] = reflectivity["etalon"] * reflectivity["work_data"] / 100  # true_data is (power_et * power_work / 100)
 reflectivity_for_exel = pd.DataFrame({"Wavelength, [nm]": reflectivity.index,
-                                      f"Reference values ({path_etalon_file})": reflectivity["etalon"],
-                                      f"Measured values ({path_work_file})": reflectivity["work_data"],
+                                      f"Reference values ({name_et_file})": reflectivity["etalon"],
+                                      f"Measured values ({name_wr_file})": reflectivity["work_data"],
                                       "Real values": reflectivity["true_data"]})
 
-writer = pd.ExcelWriter(f"Result for {path_work_file}")
+writer = pd.ExcelWriter(f"Result for {name_wr_file}")
 reflectivity_for_exel.to_excel(writer, index=False)
 writer.close()
 
