@@ -57,7 +57,7 @@ Br_2.pack(pady=10)
 win.mainloop()
 
 old_etalon_data = pd.read_excel(path_etalon_file, header=None)
-old_data_for_work = pd.read_excel(path_work_file, header=None)
+old_data_for_work = pd.read_table(path_work_file, header=None, sep='\t')
 
     # Working with data
 
@@ -127,7 +127,8 @@ reflectivity_for_exel = pd.DataFrame({"Wavelength, [nm]": reflectivity.index,
                                       f"Measured values ({name_wr_file})": reflectivity["work_data"],
                                       "Real values": reflectivity["true_data"]})
 
-writer = pd.ExcelWriter(f"Result for {name_wr_file}")
+path_for_out_file = path_work_file[:-len(name_wr_file)]
+writer = pd.ExcelWriter(f"{path_for_out_file}Result for {name_wr_file[:-4]}.xlsx")
 reflectivity_for_exel.to_excel(writer, index=False)
 writer.close()
 
