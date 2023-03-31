@@ -34,7 +34,7 @@ def open_file_et():
 
 def open_file_wr():
     global path_work_file, name_wr_file
-    file = filedialog.askopenfile(mode='r', filetypes=[("Excel files", "*.xlsx")])
+    file = filedialog.askopenfile(mode='r', filetypes=[("Dat Files", "*.dat")])
     if file:
        filepath = os.path.abspath(file.name)
        tk.Label(win, text="Измеренный файл : " + str(filepath)).pack(pady=10)
@@ -50,7 +50,7 @@ win.geometry("550x230+730+300")
 win.resizable(True, True)
 
 Br_1 = ttk.Button(win, text="Выберите путь к эталонному файлу (.xlsx)", command=open_file_et)
-Br_2 = ttk.Button(win, text="Выберите путь к измеренным данным (.xlsx)", command=open_file_wr)
+Br_2 = ttk.Button(win, text="Выберите путь к измеренным данным (.dat)", command=open_file_wr)
 Br_1.pack(pady=15)
 Br_2.pack(pady=10)
 
